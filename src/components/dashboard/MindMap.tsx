@@ -1,4 +1,4 @@
-import { useEffect, useCallback, memo, useState, useMemo } from 'react';
+import { useEffect, useCallback, memo, useState } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState, MarkerType, Node, Edge, Position, Handle } from 'reactflow';
 import dagre from '@dagrejs/dagre';
 import 'reactflow/dist/style.css';
@@ -167,7 +167,11 @@ export function MindMap({
   );
 
   return (
-    <div id="react-flow-canvas-container" className="w-full h-full min-h-[500px] rounded-2xl overflow-hidden glass border border-white/5 relative">
+    <div 
+      id="react-flow-canvas-container" 
+      style={{ width: '100%', height: '100%' }} 
+      className="w-full h-full min-h-[500px] rounded-2xl overflow-hidden glass border border-white/5 relative"
+    >
       {(!aiNodes || aiNodes.length === 0) && (
         <div className="absolute inset-0 z-10 flex items-center justify-center text-muted-foreground text-sm">
           Awaiting AI analysis...
@@ -180,17 +184,15 @@ export function MindMap({
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onNodesDelete={handleNodesDelete} // <-- Add this!
+        onNodesDelete={handleNodesDelete}
         onInit={onInit}
+        fitView
         attributionPosition="bottom-right"
         className="bg-slate-900/50"
+        style={{ width: '100%', height: '100%' }}
       >
         <Background color="#ffffff" gap={24} size={1} style={{ opacity: 0.03 }} />
-        
-        {/* Standard controls - removing Tailwind classes so standard CSS takes over */}
         <Controls style={{ fill: '#000' }} />
-        
-        {/* Standard minimap */}
         <MiniMap 
           nodeColor={(n) => n.data?.isRoot ? '#6366f1' : '#475569'}
           maskColor="rgba(0,0,0,0.5)"

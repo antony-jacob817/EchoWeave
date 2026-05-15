@@ -62,4 +62,52 @@ export const authService = {
     if (error) throw error;
     return data.user;
   },
+  // ... your existing getSession and getUser methods ...
+
+  async updateName(newName: string) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not authenticated");
+
+    // 1. Update Supabase Auth Metadata
+    const { error: authError } = await supabase.auth.updateUser({
+      data: { full_name: newName }
+    });
+    if (authError) throw authError;
+
+    // 2. Update Public Users Table
+    const { error: dbError } = await supabase
+      .from("users")
+      .update({ full_name: newName })
+      .eq("id", user.id);
+    
+    if (dbError) throw dbError;
+  },
+
+  async changePassword(oldPassword: string, newPassword: string) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !user.email) throw new Error("User not authenticated");
+
+    const { error: verifyError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: oldPassword,
+    });
+
+    if (verifyError) throw new Error("Incorrect old password.");
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (updateError) throw updateError;
+  },
+
+  async deleteAccount() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not authenticated");
+
+    await supabase.from("users").delete().eq("id", user.id);
+
+    await supabase.auth.signOut();
+    
+  }
 };

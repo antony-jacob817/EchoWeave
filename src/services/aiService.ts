@@ -53,5 +53,29 @@ export const aiService = {
 
         const data = await response.json();
         return data;
+    },
+    async generateProjectInsight(title: string, nodes: any[]) {
+
+        if (MOCK_MODE) {
+            console.log("MOCK MODE ON: Skipping real Gemini API call.");
+            await new Promise(resolve => setTimeout(resolve, 1800));
+            const topics = nodes.filter(n => n.id !== "root").slice(0, 4).map(n => n.label);
+            return `**Echo AI Analysis for "${title}"**\n\n🎯 **Core Theme**\nYou are building a comprehensive strategy focused around ${topics.join(", ")}.\n\n🧠 **Structural Analysis**\n- Your main branches are well-defined and cover distinct channels.\n- The connection between ${topics[0]} and your end goal is very strong.\n\n⚡ **Actionable Next Step**\nRecord a quick 30-second voice note breaking down **${topics[1] || 'your next milestone'}** into three smaller, daily tasks.`;
+        }
+
+        // REAL MODE (Securely passes data to your Vercel backend)
+        const response = await fetch('/api/generateInsight', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, nodes })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to generate insight");
+        }
+
+        const data = await response.json();
+        return data.text;
     }
 };
