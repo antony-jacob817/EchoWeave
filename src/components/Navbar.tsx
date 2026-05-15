@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Menu, X, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const links = [
@@ -15,7 +15,8 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
+  const [dark, setDark] = useState(true);
 
   // Safely extract the user's name from Supabase metadata, fallback to email prefix, or "User"
   const userName = (user as any)?.user_metadata?.full_name 
@@ -31,6 +32,11 @@ export function Navbar() {
     }
   };
 
+  useEffect(() => {
+      if (typeof document === "undefined") return;
+      document.documentElement.classList.toggle("light", !dark);
+    }, [dark]);
+
   return (
     <header className="fixed top-0 inset-x-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 mt-3">
@@ -44,7 +50,11 @@ export function Navbar() {
             ))}
           </nav>
           
+          {/* DESKTOP CONTROLS */}
           <div className="hidden md:flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10" onClick={() => setDark(!dark)}>
+              {dark ? <Sun className="h-4 w-4 text-muted-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
+            </Button>
             {user ? (
               // LOGGED IN VIEW (Desktop)
               <>
@@ -71,11 +81,18 @@ export function Navbar() {
             )}
           </div>
 
-          <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* MOBILE CONTROLS (Theme Toggle + Hamburger Menu) */}
+          <div className="flex items-center gap-1 md:hidden">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10" onClick={() => setDark(!dark)}>
+              {dark ? <Sun className="h-5 w-5 text-muted-foreground" /> : <Moon className="h-5 w-5 text-muted-foreground" />}
+            </Button>
+            <button className="p-2" onClick={() => setOpen(!open)} aria-label="Menu">
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
         
+        {/* MOBILE MENU DROPDOWN */}
         {open && (
           <div className="md:hidden glass mt-2 rounded-2xl p-4 space-y-3">
             {links.map((l) => (

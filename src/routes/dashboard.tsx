@@ -50,7 +50,8 @@ function Dashboard() {
   // Echo AI State
   const [insightProjectId, setInsightProjectId] = useState<string | null>(null);
   const [insightData, setInsightData] = useState<string | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);  
+  const [dark, setDark] = useState(true);
   
   // Tab State
   const [activeTab, setActiveTab] = useState<"Workspace" | "Projects" | "Editor" | "AI Insights" | "Settings">("Workspace");
@@ -77,7 +78,12 @@ function Dashboard() {
   // The AI Memory State
   const [mapNodes, setMapNodes] = useState<AiNode[]>([]);
 
- useEffect(() => {
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.classList.toggle("light", !dark);
+  }, [dark]);
+
+  useEffect(() => {
     if (activeTab === "AI Insights" && activeId && insightProjectId !== activeId) {
       handleAnalyzeProject(activeId, false);
     }
@@ -550,7 +556,10 @@ function Dashboard() {
             </div>
           </div>
             
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">            
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">  
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-white/10" onClick={() => setDark(!dark)}>
+              {dark ? <Sun className="h-4 w-4 text-muted-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
+            </Button>          
             {activeTab === "Editor" && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
