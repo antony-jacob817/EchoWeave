@@ -44,8 +44,10 @@ export function Hero() {
                 Start Free <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
-            <Button variant="glass" size="xl">
-              <Play className="h-4 w-4" /> Watch Demo
+            <Button asChild variant="glass" size="xl">
+              <Link to="/demo">
+                <Play className="h-4 w-4 mr-2" /> View Demo
+              </Link>
             </Button>
           </div>
           <div className="flex items-center gap-4 pt-4">

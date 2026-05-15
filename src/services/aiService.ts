@@ -1,6 +1,7 @@
-// src/services/aiService.ts (Frontend)
+import { supabase } from "@/lib/supabase";
 
-const MOCK_MODE = false; // Set to true to test UI, false for real AI
+// 1. Turned off Mock Mode for production
+const MOCK_MODE = false; 
 
 export const aiService = {
     async blobToBase64(blob: Blob): Promise<string> {
@@ -20,7 +21,6 @@ export const aiService = {
     },
 
     async generateMindMapFromAudio(audioBlob: Blob) {
-        // MOCK MODE
         if (MOCK_MODE) {
             console.log("MOCK MODE ON: Skipping backend API call.");
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -34,7 +34,7 @@ export const aiService = {
             };
         }
 
-        // REAL MODE (Securely passes data to your Vercel backend)
+        // SECURE PRODUCTION MODE: Route through your Backend
         const base64Audio = await this.blobToBase64(audioBlob);
 
         const response = await fetch('/api/generateMindmap', {
@@ -54,8 +54,8 @@ export const aiService = {
         const data = await response.json();
         return data;
     },
-    async generateProjectInsight(title: string, nodes: any[]) {
 
+    async generateProjectInsight(title: string, nodes: any[]) {
         if (MOCK_MODE) {
             console.log("MOCK MODE ON: Skipping real Gemini API call.");
             await new Promise(resolve => setTimeout(resolve, 1800));
@@ -63,7 +63,7 @@ export const aiService = {
             return `**Echo AI Analysis for "${title}"**\n\n🎯 **Core Theme**\nYou are building a comprehensive strategy focused around ${topics.join(", ")}.\n\n🧠 **Structural Analysis**\n- Your main branches are well-defined and cover distinct channels.\n- The connection between ${topics[0]} and your end goal is very strong.\n\n⚡ **Actionable Next Step**\nRecord a quick 30-second voice note breaking down **${topics[1] || 'your next milestone'}** into three smaller, daily tasks.`;
         }
 
-        // REAL MODE (Securely passes data to your Vercel backend)
+        // SECURE PRODUCTION MODE: Route through your Backend
         const response = await fetch('/api/generateInsight', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -77,5 +77,37 @@ export const aiService = {
 
         const data = await response.json();
         return data.text;
+    },
+
+    // --- DATABASE PERSISTENCE FOR INSIGHTS ---
+    async getSavedProjectInsight(projectId: string): Promise<string | null> {
+      const { data, error } = await supabase
+        .from("ai_generations")
+        .select("output_text") 
+        .eq("project_id", projectId)
+        .eq("generation_type", "insight")
+        .maybeSingle();
+
+      if (error) return null;
+      return data?.output_text || null; 
+    },
+
+    async saveProjectInsight(projectId: string, insightText: string) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      const { error } = await supabase
+        .from("ai_generations")
+        .upsert(
+          {
+            project_id: projectId,
+            user_id: user.id,
+            generation_type: "insight",
+            output_text: insightText, 
+          },
+          { onConflict: "project_id,generation_type" }
+        );
+
+      if (error) throw error;
     }
 };

@@ -4,14 +4,14 @@ import { SocialButtons } from "@/components/auth/SocialButtons";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
 
 function SignupPage() {
-  const { signup } = useAuth();
+  const { signup, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +19,12 @@ function SignupPage() {
   const [confirm, setConfirm] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
