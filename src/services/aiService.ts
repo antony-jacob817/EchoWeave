@@ -1,6 +1,6 @@
 // src/services/aiService.ts (Frontend)
 
-const MOCK_MODE = false; // Set to true to test UI, false for real AI
+const MOCK_MODE = true; // Set to true to test UI, false for real AI
 
 export const aiService = {
     async blobToBase64(blob: Blob): Promise<string> {
