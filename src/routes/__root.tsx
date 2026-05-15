@@ -12,7 +12,7 @@ import { AuthProvider } from "@/lib/auth";
 
 import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
-
+import faviconUrl from "@/assets/logo.png";
 import appCss from "../styles.css?url";
 
 // Initialize PostHog safely on the client side
@@ -79,6 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "icon", type: "image/png", href: faviconUrl },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
