@@ -65,8 +65,6 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
   );
 });
 
-const nodeTypes = useMemo(() => ({ custom: CustomMindMapNode }), []);
-
 const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -98,6 +96,8 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
   return { nodes: newNodes, edges };
 };
 
+const nodeTypes = { custom: CustomMindMapNode };
+
 // 1. Update your props interface
 export function MindMap({ 
   aiNodes, 
@@ -110,7 +110,6 @@ export function MindMap({
 }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const nodeTypes = useMemo(() => ({ custom: CustomMindMapNode }), []);
 
   useEffect(() => {
     if (!aiNodes || aiNodes.length === 0) return;
@@ -183,9 +182,8 @@ export function MindMap({
         onEdgesChange={onEdgesChange}
         onNodesDelete={handleNodesDelete} // <-- Add this!
         onInit={onInit}
-        fitView
         attributionPosition="bottom-right"
-        className="bg-slate-900/50" // Base dark background
+        className="bg-slate-900/50"
       >
         <Background color="#ffffff" gap={24} size={1} style={{ opacity: 0.03 }} />
         

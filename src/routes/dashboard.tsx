@@ -14,7 +14,7 @@ import { mindmapService } from "@/services/mindmapService";
 import {
   Search, Plus, Download, Trash2, Sun, Moon, LogOut,
   LayoutGrid, FolderOpen, Settings, Sparkles, Clock, Star,
-  Mic, Loader2, AlertCircle, FileText
+  Mic, Loader2, AlertCircle, FileText, Menu, X
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
@@ -45,6 +45,7 @@ function Dashboard() {
   const [notesLoading, setNotesLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [dark, setDark] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // The AI Memory State
   const [mapNodes, setMapNodes] = useState<AiNode[]>([]);
@@ -364,6 +365,11 @@ function Dashboard() {
         <div className="flex-1 flex flex-col min-w-0">
           {/* Full Restored Header */}
           <header className="h-16 border-b border-border flex items-center gap-3 px-4 sm:px-6 bg-background/80 backdrop-blur-md sticky top-0 z-10">
+            <div className="md:hidden flex items-center">
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)}>
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
             <div className="md:hidden"><Logo /></div>
             <div className="relative flex-1 max-w-md ml-auto md:ml-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -514,6 +520,68 @@ function Dashboard() {
           </main>
         </div>
       </div>
+      {/* MOBILE SIDEBAR OVERLAY */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          {/* Dark background blur */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in" 
+            onClick={() => setIsMobileMenuOpen(false)} 
+          />
+          
+          {/* Sliding Drawer */}
+          <div className="relative w-72 max-w-[80%] bg-sidebar h-full flex flex-col border-r border-border shadow-2xl animate-in slide-in-from-left-full duration-300">
+            <div className="p-5 border-b border-sidebar-border flex justify-between items-center">
+              <Logo />
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            
+            <div className="px-3 mt-4">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground px-3 mb-2">Projects</p>
+              <div className="space-y-1 max-h-[60vh] overflow-auto">
+                {projectsLoading ? (
+                  <div className="px-3 py-2 space-y-2">
+                    {[1,2,3].map(i => <div key={i} className="h-4 bg-muted animate-pulse rounded" />)}
+                  </div>
+                ) : filtered.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      setActiveId(p.id);
+                      setIsMobileMenuOpen(false); // Close menu when selecting a project
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
+                      activeId === p.id ? "bg-sidebar-accent text-sidebar-accent-foreground" : "hover:bg-sidebar-accent/50 text-muted-foreground"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="truncate font-medium">{p.title}</p>
+                      {p.is_favorite && <Star className="h-3 w-3 fill-accent text-accent" />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-auto p-5 border-t border-sidebar-border flex justify-between items-center">
+               <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-semibold text-primary-foreground">
+                    {userInitial}
+                  </div>
+                  <p className="text-sm font-medium truncate">{userName}</p>
+               </div>
+               <button
+                  onClick={() => { logout(); navigate({ to: "/" }); }}
+                  className="p-2 rounded-md hover:bg-sidebar-accent text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
