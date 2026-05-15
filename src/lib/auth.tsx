@@ -3,6 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { useAuthStore } from "@/store/useAuthStore";
 import { authService } from "@/services/authService";
+import posthog from 'posthog-js';
 
 interface AuthContextValue {
   user: User | null;
@@ -32,11 +33,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     initAuth();
 
-    // Listen for changes on auth state (logged in, signed out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
         setLoading(false);
+
+        if (currentUser) {
+          posthog.identify(currentUser.id, { 
+            email: currentUser.email, 
+            name: currentUser.user_metadata?.full_name || currentUser.user_metadata?.name 
+          });
+        } else {
+          posthog.reset(); 
+        }
       }
     );
 

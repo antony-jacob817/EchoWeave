@@ -14,11 +14,14 @@ import { mindmapService } from "@/services/mindmapService";
 import {
   Search, Plus, Download, Trash2, Sun, Moon, LogOut,
   LayoutGrid, FolderOpen, Settings, Sparkles, Clock, Star,
-  Mic, Loader2, AlertCircle
+  Mic, Loader2, AlertCircle, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import * as htmlToImage from 'html-to-image';
+import { jsPDF } from 'jspdf';
+import { usePostHog } from 'posthog-js/react';
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
@@ -31,6 +34,7 @@ function DashboardPage() {
 }
 
 function Dashboard() {
+  const posthog = usePostHog();
   const { user, logout } = useAuth();
   const { projects, loading: projectsLoading, fetchProjects, addProject, removeProject, toggleFavorite } = useProjectStore();
   const { uploadRecording, resetRecording } = useRecordingStore();
@@ -152,12 +156,16 @@ function Dashboard() {
     
     try {
       const voiceNote = await uploadRecording(activeId);
+      posthog.capture('voice_note_recorded', {
+        projectId: activeId,
+        duration: duration
+      });
       setVoiceNotes([voiceNote, ...voiceNotes]);
       
       toast.loading("Weaving your thoughts into a map...", { id: toastId });
 
       const { transcript, mindmap } = await aiService.generateMindMapFromAudio(blob);
-
+      
       const taggedNodes = mindmap.map((node: AiNode) => ({
         ...node,
         sourceId: voiceNote.id 
@@ -165,16 +173,28 @@ function Dashboard() {
 
       await voiceNoteService.updateTranscript(voiceNote.id, transcript);
 
+      setVoiceNotes(prevNotes => prevNotes.map(n => 
+        n.id === voiceNote.id ? { ...n, transcript: transcript } : n
+      ));
+
       const updatedMap = [...mapNodes, ...taggedNodes];
       
       setMapNodes(updatedMap);
       await mindmapService.saveMindMap(activeId, activeProject?.title || "Untitled", updatedMap);
 
+      posthog.capture('mindmap_generated', {
+        projectId: activeId,
+        nodeCount: mindmap.length
+      });
+
       resetRecording();
       toast.success("Mind map expanded!", { id: toastId });
       
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      posthog.capture('generation_error', {
+        errorMessage: err.message || "Unknown error"
+      });
       toast.error("Generation failed. Try again.", { id: toastId });
     }
   };
@@ -190,21 +210,70 @@ function Dashboard() {
       await mindmapService.saveMindMap(activeId!, activeProject?.title || "Untitled", cleanedMap);
 
       toast.success("Recording and its map branches deleted");
-    } catch (err) {
+    } catch (err: any) {
       toast.error("Failed to delete recording");
     }
   };
 
-  const exportProject = () => {
-    if (!activeProject) return;
-    const content = `Project: ${activeProject.title}\n\nVoice Notes: ${voiceNotes.length}\n${voiceNotes.map(n => `- ${n.audio_url} (${n.duration_seconds}s)`).join("\n")}`;
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${activeProject.title.replace(/\s+/g, "-").toLowerCase()}.txt`;
-    a.click();
-    toast.success("Exported project details");
+  const filterUI = (node: HTMLElement) => {
+    if (node?.classList) {
+      return (
+        !node.classList.contains('react-flow__minimap') &&
+        !node.classList.contains('react-flow__controls') &&
+        !node.classList.contains('react-flow__panel')
+      );
+    }
+    return true;
+  };
+
+  const exportAsImage = async () => {
+    const element = document.getElementById('react-flow-canvas-container');
+    if (!element) return;
+
+    const toastId = toast.loading("Taking a snapshot of your map...");
+    try {
+      const dataUrl = await htmlToImage.toPng(element, {
+        backgroundColor: '#0B0F19', 
+        quality: 1.0,
+        filter: filterUI // <-- ADDED THIS!
+      });
+
+      const link = document.createElement('a');
+      link.download = `${activeProject?.title || 'mindmap'}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      toast.success("Exported successfully as PNG!", { id: toastId });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate image", { id: toastId });
+    }
+  };
+
+  const exportAsPDF = async () => {
+    const element = document.getElementById('react-flow-canvas-container');
+    if (!element) return;
+
+    const toastId = toast.loading("Formatting PDF...");
+    try {
+      const dataUrl = await htmlToImage.toPng(element, {
+        backgroundColor: '#0B0F19',
+        quality: 0.95,
+        filter: filterUI // <-- ADDED THIS!
+      });
+
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
+      const imgWidth = pdf.internal.pageSize.getWidth();
+      const imgHeight = (element.offsetHeight * imgWidth) / element.offsetWidth;
+
+      pdf.addImage(dataUrl, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`${activeProject?.title || 'mindmap'}.pdf`);
+
+      toast.success("Exported successfully as PDF!", { id: toastId });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate PDF", { id: toastId });
+    }
   };
 
   const userInitial = (user as any)?.user_metadata?.full_name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || "U";
@@ -309,9 +378,23 @@ function Dashboard() {
               <Button variant="ghost" size="icon" onClick={() => setDark(!dark)} title="Toggle theme">
                 {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-              <Button variant="glass" size="sm" onClick={exportProject} disabled={!activeProject}>
-                <Download className="h-4 w-4" /> Export
+              <div className="ml-auto flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={() => setDark(!dark)} title="Toggle theme">
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
+              
+              <Button variant="glass" size="sm" onClick={exportAsImage} disabled={!activeProject}>
+                <Download className="h-4 w-4 mr-2" /> PNG
+              </Button>
+              
+              <Button variant="glass" size="sm" onClick={exportAsPDF} disabled={!activeProject}>
+                <Download className="h-4 w-4 mr-2" /> PDF
+              </Button>
+
+              <Button variant="hero" size="sm" onClick={handleNewProject}>
+                <Plus className="h-4 w-4 mr-2" /> New Project
+              </Button>
+            </div>
               <Button variant="hero" size="sm" onClick={handleNewProject}>
                 <Plus className="h-4 w-4" /> New Project
               </Button>
@@ -322,7 +405,6 @@ function Dashboard() {
             {/* Left column - Voice Recorder */}
             <div className="space-y-5">
               <VoiceRecorder onComplete={onRecordingComplete} />
-
               <div className="glass rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-xs uppercase tracking-widest text-muted-foreground">Recent Recordings</p>
@@ -354,6 +436,11 @@ function Dashboard() {
                         </button>
                       </div>
                       <audio src={n.audio_url} controls className="w-full h-8 mt-2" />
+                      {n.transcript && (
+                        <div className="mt-3 bg-slate-900/40 rounded-lg p-3 text-xs leading-relaxed text-slate-300 border border-slate-800/50">
+                          <p className="whitespace-pre-wrap">{n.transcript}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                   {!notesLoading && voiceNotes.length === 0 && (

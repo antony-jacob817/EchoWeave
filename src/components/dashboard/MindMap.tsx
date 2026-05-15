@@ -65,9 +65,7 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
   );
 });
 
-const nodeTypes = {
-  custom: CustomMindMapNode,
-};
+const nodeTypes = useMemo(() => ({ custom: CustomMindMapNode }), []);
 
 const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -170,7 +168,7 @@ export function MindMap({
   );
 
   return (
-    <div className="w-full h-full min-h-[500px] rounded-2xl overflow-hidden glass border border-white/5 relative">
+    <div id="react-flow-canvas-container" className="w-full h-full min-h-[500px] rounded-2xl overflow-hidden glass border border-white/5 relative">
       {(!aiNodes || aiNodes.length === 0) && (
         <div className="absolute inset-0 z-10 flex items-center justify-center text-muted-foreground text-sm">
           Awaiting AI analysis...

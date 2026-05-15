@@ -10,7 +10,18 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 
+import posthog from 'posthog-js';
+import { PostHogProvider } from 'posthog-js/react';
+
 import appCss from "../styles.css?url";
+
+// Initialize PostHog safely on the client side
+if (typeof window !== 'undefined') {
+  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+    api_host: import.meta.env.VITE_POSTHOG_HOST,
+    person_profiles: 'identified_only', 
+  });
+}
 
 function NotFoundComponent() {
   return (
@@ -97,11 +108,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Outlet />
-        <Toaster />
-      </AuthProvider>
-    </QueryClientProvider>
+    /* PostHogProvider wraps everything here! */
+    <PostHogProvider client={posthog}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Outlet />
+          <Toaster />
+        </AuthProvider>
+      </QueryClientProvider>
+    </PostHogProvider>
   );
 }
