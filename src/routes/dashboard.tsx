@@ -360,17 +360,6 @@ function Dashboard() {
     }
   };
 
-  const filterUI = (node: HTMLElement) => {
-    if (node?.classList) {
-      return (
-        !node.classList.contains('react-flow__minimap') &&
-        !node.classList.contains('react-flow__controls') &&
-        !node.classList.contains('react-flow__panel')
-      );
-    }
-    return true;
-  };
-
   const formatInsightText = (text: string) => {
     if (!text) return "";
     return text
@@ -387,17 +376,31 @@ function Dashboard() {
 
     const style = document.createElement('style');
     style.innerHTML = `
+      /* Fix the glowing edge artifacts */
       .react-flow__edge-path { filter: none !important; }
-      .react-flow__node > div { backdrop-filter: none !important; }
+      .react-flow__node > div { 
+        backdrop-filter: none !important; 
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important; 
+      }
+      
+      /* THE NEW FIX: Hide all floating React Flow UI panels during export */
+      .react-flow__panel,
+      .react-flow__controls,
+      .react-flow__minimap,
+      .react-flow__attribution {
+        display: none !important;
+      }
     `;
     document.head.appendChild(style);
 
     try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+
       const dataUrl = await htmlToImage.toPng(element, {
         backgroundColor: '#0B0F19', 
         quality: 1.0,
-        pixelRatio: 2,
-        filter: filterUI
+        pixelRatio: 2
       });
 
       const link = document.createElement('a');
@@ -422,17 +425,31 @@ function Dashboard() {
 
     const style = document.createElement('style');
     style.innerHTML = `
+      /* Fix the glowing edge artifacts */
       .react-flow__edge-path { filter: none !important; }
-      .react-flow__node > div { backdrop-filter: none !important; }
+      .react-flow__node > div { 
+        backdrop-filter: none !important; 
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important; 
+      }
+      
+      /* THE NEW FIX: Hide all floating React Flow UI panels during export */
+      .react-flow__panel,
+      .react-flow__controls,
+      .react-flow__minimap,
+      .react-flow__attribution {
+        display: none !important;
+      }
     `;
     document.head.appendChild(style);
 
     try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+
       const dataUrl = await htmlToImage.toPng(element, {
         backgroundColor: '#0B0F19',
         quality: 1.0,
-        pixelRatio: 2,
-        filter: filterUI
+        pixelRatio: 2
       });
 
       const pdf = new jsPDF('landscape', 'mm', 'a4');
@@ -901,10 +918,13 @@ function Dashboard() {
                       <p className="text-primary font-medium animate-pulse text-lg">Echo AI is analyzing your map...</p>
                     </div>
                   ) : insightData ? (
-                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 overflow-y-auto pr-2 scrollbar-thin">
+                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 overflow-y-auto -ml-8 pl-8 -mt-8 pt-8 pr-2 pb-4 scrollbar-thin">
+                      
                       <div className="flex items-center gap-5 mb-8 pb-6 border-b border-white/10">
-                       <div className="relative shrink-0">
-                        <div className="absolute inset-0 bg-primary/80 rounded-full blur-xl opacity-60"></div>
+                        <div className="relative shrink-0">
+                          {/* The ambient glow is now free to expand into the padding without being sliced */}
+                          <div className="absolute inset-0 bg-primary/80 rounded-full blur-xl opacity-60"></div>
+                          
                           <div className="relative h-14 w-14 rounded-full bg-gradient-primary flex items-center justify-center border border-white/20 shadow-xl">
                             <Sparkles className="h-7 w-7 text-white" />
                           </div>
