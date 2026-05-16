@@ -38,10 +38,10 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
   return (
     <div 
       onDoubleClick={onDoubleClick}
-      className={`px-4 py-3 rounded-xl border backdrop-blur-md text-sm font-medium flex items-center justify-center text-center shadow-lg transition-all cursor-pointer
+      className={`px-4 py-3 rounded-xl border backdrop-blur-md text-sm font-medium flex items-center justify-center text-center transition-all cursor-pointer
       ${isRoot 
         ? 'bg-indigo-600/30 border-indigo-400/50 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]' 
-        : 'bg-slate-800/80 border-slate-600/50 text-slate-200 hover:border-slate-400/50 hover:bg-slate-700/80'
+        : 'bg-slate-800/80 border-slate-600/50 text-slate-200 hover:border-slate-400/50 hover:bg-slate-700/80 shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
       }`} 
       style={{ width: nodeWidth, minHeight: nodeHeight }}
     >
@@ -134,7 +134,12 @@ export function MindMap({
         source: node.parent as string,
         target: node.id,
         animated: true, 
-        style: { stroke: '#818cf8', strokeWidth: 2 }, // Indigo-400 color
+        style: { 
+          stroke: '#818cf8', 
+          strokeWidth: 2,
+          // THE FIX: Overriding the muddy shadow with a clean, glowing drop-shadow
+          filter: 'drop-shadow(0 0 5px rgba(129, 140, 248, 0.4))' 
+        }, 
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#818cf8',
@@ -158,6 +163,7 @@ export function MindMap({
       reactFlowInstance.fitView({ padding: 0.2, duration: 800 });
     });
   }, []);
+  
   const handleNodesDelete = useCallback(
     (deleted: Node[]) => {
       const ids = deleted.map(n => n.id);
