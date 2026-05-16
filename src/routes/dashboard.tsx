@@ -734,9 +734,9 @@ function Dashboard() {
 
           {/* VIEW 2: PROJECTS (Mind Map & Voice Recorder) */}
           {activeTab === "Editor" && (
-            <div className="h-full grid gap-6 lg:grid-cols-[340px_1fr] animate-in fade-in zoom-in-[0.99] duration-300">
+            <div className="flex flex-col lg:grid gap-6 lg:grid-cols-[340px_1fr] lg:h-full animate-in fade-in zoom-in-[0.99] duration-300">
               {/* Left column - Voice Recorder */}
-              <div className="space-y-6 overflow-y-auto pr-2 scrollbar-thin">
+              <div className="space-y-6 shrink-0 lg:overflow-y-auto lg:pr-2 scrollbar-thin">
                 <VoiceRecorder onComplete={onRecordingComplete} />
                 <div className="glass rounded-3xl p-6 border-white/5">
                   <div className="flex items-center justify-between mb-5">
@@ -782,7 +782,7 @@ function Dashboard() {
               </div>
 
               {/* Right column — Workspace */}
-              <div className="flex flex-col min-w-0">
+              <div className="flex flex-col min-w-0 h-[600px] lg:h-auto">
                 {activeProject ? (
                   <div className="glass-strong rounded-3xl p-2 flex-1 flex flex-col min-h-0 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                     <div className="flex items-start justify-between gap-4 p-5 pb-2">
