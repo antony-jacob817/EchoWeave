@@ -384,10 +384,19 @@ function Dashboard() {
     if (!element) return;
 
     const toastId = toast.loading("Taking a snapshot of your map...");
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .react-flow__edge-path { filter: none !important; }
+      .react-flow__node > div { backdrop-filter: none !important; }
+    `;
+    document.head.appendChild(style);
+
     try {
       const dataUrl = await htmlToImage.toPng(element, {
         backgroundColor: '#0B0F19', 
         quality: 1.0,
+        pixelRatio: 2,
         filter: filterUI
       });
 
@@ -400,6 +409,8 @@ function Dashboard() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to generate image", { id: toastId });
+    } finally {
+      document.head.removeChild(style);
     }
   };
 
@@ -408,10 +419,19 @@ function Dashboard() {
     if (!element) return;
 
     const toastId = toast.loading("Formatting PDF...");
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .react-flow__edge-path { filter: none !important; }
+      .react-flow__node > div { backdrop-filter: none !important; }
+    `;
+    document.head.appendChild(style);
+
     try {
       const dataUrl = await htmlToImage.toPng(element, {
         backgroundColor: '#0B0F19',
-        quality: 0.95,
+        quality: 1.0,
+        pixelRatio: 2,
         filter: filterUI
       });
 
@@ -426,6 +446,8 @@ function Dashboard() {
     } catch (error) {
       console.error(error);
       toast.error("Failed to generate PDF", { id: toastId });
+    } finally {
+      document.head.removeChild(style);
     }
   };
 
