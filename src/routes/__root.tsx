@@ -14,6 +14,7 @@ import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import faviconUrl from "@/assets/logo.png";
 import appCss from "../styles.css?url";
+import '../styles.css';
 
 // Initialize PostHog safely on the client side
 if (typeof window !== 'undefined') {

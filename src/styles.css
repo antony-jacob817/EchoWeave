@@ -1,7 +1,5 @@
 @import "tailwindcss" source(none);
 @source "../src";
-@source "../components";
-@source "../app";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -87,13 +85,13 @@
   --shadow-card: 0 8px 32px -8px oklch(0.1 0.02 265 / 0.5);
 
   /* Premium Glassmorphism Properties */
-  --glass-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.6) 100%);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-bg: linear-gradient(135deg, oklch(1 0 0 / 0.07) 0%, oklch(1 0 0 / 0.02) 100%);
+  --glass-border: oklch(1 0 0 / 0.12);
+  --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.25);
 
-  --glass-strong-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(8, 12, 21, 0.75) 100%);
-  --glass-strong-border: rgba(255, 255, 255, 0.22);
-  --glass-strong-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+  --glass-strong-bg: linear-gradient(135deg, oklch(1 0 0 / 0.12) 0%, oklch(1 0 0 / 0.04) 100%);
+  --glass-strong-border: oklch(1 0 0 / 0.18);
+  --glass-strong-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.35);
 }
 
 .light {
@@ -124,13 +122,13 @@
   --sidebar-border: oklch(0.18 0.03 265 / 10%);
 
   /* Premium Glassmorphism Properties (Light Mode) */
-  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(241, 245, 249, 0.65) 100%);
-  --glass-border: rgba(15, 23, 42, 0.14);
-  --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
+  --glass-bg: linear-gradient(135deg, oklch(1 0 0 / 0.75) 0%, oklch(1 0 0 / 0.45) 100%);
+  --glass-border: oklch(0.18 0.03 265 / 0.12);
+  --glass-shadow: 0 8px 32px 0 oklch(0.18 0.03 265 / 0.06);
 
-  --glass-strong-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(241, 245, 249, 0.8) 100%);
-  --glass-strong-border: rgba(15, 23, 42, 0.2);
-  --glass-strong-shadow: 0 12px 40px 0 rgba(15, 23, 42, 0.12);
+  --glass-strong-bg: linear-gradient(135deg, oklch(1 0 0 / 0.85) 0%, oklch(1 0 0 / 0.6) 100%);
+  --glass-strong-border: oklch(0.18 0.03 265 / 0.18);
+  --glass-strong-shadow: 0 12px 40px 0 oklch(0.18 0.03 265 / 0.1);
 }
 
 @layer base {
@@ -184,91 +182,49 @@
   }
 }
 
-@utility bg-gradient-primary {
-  background-image: var(--gradient-primary);
-}
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
 
-@utility bg-gradient-hero {
-  background-image: var(--gradient-hero);
-}
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
 
-@utility text-gradient {
-  background-image: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+  .text-gradient {
+    background-image: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 
-@utility glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
 
-@utility glass-strong {
-  background: var(--glass-strong-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-strong-border);
-  box-shadow: var(--glass-strong-shadow);
-}
+  .glass-strong {
+    background: var(--glass-strong-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-strong-border);
+    box-shadow: var(--glass-strong-shadow);
+  }
 
-@utility shadow-glow {
-  box-shadow: var(--shadow-glow);
-}
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
 
-@utility shadow-elegant {
-  box-shadow: var(--shadow-elegant);
-}
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
 
-@utility shadow-card {
-  box-shadow: var(--shadow-card);
-}
-
-/* Global Fallbacks to ensure inclusion in production builds regardless of purging */
-.glass {
-  background: var(--glass-bg) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--glass-shadow) !important;
-}
-
-.glass-strong {
-  background: var(--glass-strong-bg) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
-  border: 1px solid var(--glass-strong-border) !important;
-  box-shadow: var(--glass-strong-shadow) !important;
-}
-
-.bg-gradient-primary {
-  background-image: var(--gradient-primary);
-}
-
-.bg-gradient-hero {
-  background-image: var(--gradient-hero);
-}
-
-.text-gradient {
-  background-image: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.shadow-glow {
-  box-shadow: var(--shadow-glow);
-}
-
-.shadow-elegant {
-  box-shadow: var(--shadow-elegant);
-}
-
-.shadow-card {
-  box-shadow: var(--shadow-card);
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
 }
 
 @keyframes float {
