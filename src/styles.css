@@ -182,49 +182,91 @@
   }
 }
 
-@layer utilities {
-  .bg-gradient-primary {
-    background-image: var(--gradient-primary);
-  }
+@utility bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
 
-  .bg-gradient-hero {
-    background-image: var(--gradient-hero);
-  }
+@utility bg-gradient-hero {
+  background-image: var(--gradient-hero);
+}
 
-  .text-gradient {
-    background-image: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+@utility text-gradient {
+  background-image: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
-  .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-  }
+@utility glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
 
-  .glass-strong {
-    background: var(--glass-strong-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--glass-strong-border);
-    box-shadow: var(--glass-strong-shadow);
-  }
+@utility glass-strong {
+  background: var(--glass-strong-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-strong-border);
+  box-shadow: var(--glass-strong-shadow);
+}
 
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
 
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
-  }
+@utility shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
 
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Global Fallbacks to ensure inclusion in production builds regardless of purging */
+.glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.glass-strong {
+  background: var(--glass-strong-bg) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid var(--glass-strong-border) !important;
+  box-shadow: var(--glass-strong-shadow) !important;
+}
+
+.bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+.bg-gradient-hero {
+  background-image: var(--gradient-hero);
+}
+
+.text-gradient {
+  background-image: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+.shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
 }
 
 @keyframes float {
