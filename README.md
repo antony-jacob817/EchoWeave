@@ -31,6 +31,8 @@
 * Supabase (PostgreSQL Database & Auth)
 * Google Generative AI (Gemini 2.5 Flash)
 
+<img width="1918" height="864" alt="Screenshot 2026-05-16 150532" src="https://github.com/user-attachments/assets/33872d82-8b26-496a-a379-ac665c71b486" />
+
 ## 🚀 Getting Started
 
 ### Prerequisites
