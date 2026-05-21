@@ -83,6 +83,15 @@
   --shadow-glow: 0 0 60px -10px oklch(0.65 0.22 285 / 0.55);
   --shadow-elegant: 0 20px 50px -20px oklch(0.1 0.02 265 / 0.6);
   --shadow-card: 0 8px 32px -8px oklch(0.1 0.02 265 / 0.5);
+
+  /* Premium Glassmorphism Properties */
+  --glass-bg: linear-gradient(135deg, oklch(1 0 0 / 0.07) 0%, oklch(1 0 0 / 0.02) 100%);
+  --glass-border: oklch(1 0 0 / 0.12);
+  --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.25);
+
+  --glass-strong-bg: linear-gradient(135deg, oklch(1 0 0 / 0.12) 0%, oklch(1 0 0 / 0.04) 100%);
+  --glass-strong-border: oklch(1 0 0 / 0.18);
+  --glass-strong-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.35);
 }
 
 .light {
@@ -111,6 +120,15 @@
   --sidebar-accent: oklch(0.96 0.01 260);
   --sidebar-accent-foreground: oklch(0.18 0.03 265);
   --sidebar-border: oklch(0.18 0.03 265 / 10%);
+
+  /* Premium Glassmorphism Properties (Light Mode) */
+  --glass-bg: linear-gradient(135deg, oklch(1 0 0 / 0.75) 0%, oklch(1 0 0 / 0.45) 100%);
+  --glass-border: oklch(0.18 0.03 265 / 0.12);
+  --glass-shadow: 0 8px 32px 0 oklch(0.18 0.03 265 / 0.06);
+
+  --glass-strong-bg: linear-gradient(135deg, oklch(1 0 0 / 0.85) 0%, oklch(1 0 0 / 0.6) 100%);
+  --glass-strong-border: oklch(0.18 0.03 265 / 0.18);
+  --glass-strong-shadow: 0 12px 40px 0 oklch(0.18 0.03 265 / 0.1);
 }
 
 @layer base {
@@ -163,16 +181,18 @@
     color: transparent;
   }
   .glass {
-    background: oklch(1 0 0 / 0.04);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid oklch(1 0 0 / 0.08);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
   }
   .glass-strong {
-    background: oklch(1 0 0 / 0.07);
+    background: var(--glass-strong-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid oklch(1 0 0 / 0.12);
+    border: 1px solid var(--glass-strong-border);
+    box-shadow: var(--glass-strong-shadow);
   }
   .shadow-glow { box-shadow: var(--shadow-glow); }
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
