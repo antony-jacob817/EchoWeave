@@ -15,7 +15,7 @@ import { mindmapService } from "@/services/mindmapService";
 import {
   Search, Plus, Download, Trash2, Sun, Moon, LogOut,
   LayoutGrid, FolderOpen, Settings, Sparkles, Clock, Star,
-  Mic, Loader2, AlertCircle, Menu, X, Check,
+  Mic, Loader2, AlertCircle, Menu, X, Check, RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
@@ -918,28 +918,43 @@ function Dashboard() {
                       <p className="text-primary font-medium animate-pulse text-lg">Echo AI is analyzing your map...</p>
                     </div>
                   ) : insightData ? (
-                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 overflow-y-auto -ml-8 pl-8 -mt-8 pt-8 pr-2 pb-4 scrollbar-thin">
+                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 min-h-0">
                       
-                      <div className="flex items-center gap-5 mb-8 pb-6 border-b border-white/10">
-                        <div className="relative shrink-0">
-                          {/* The ambient glow is now free to expand into the padding without being sliced */}
-                          <div className="absolute inset-0 bg-primary/80 rounded-full blur-xl opacity-60"></div>
-                          
-                          <div className="relative h-14 w-14 rounded-full bg-gradient-primary flex items-center justify-center border border-white/20 shadow-xl">
-                            <Sparkles className="h-7 w-7 text-white" />
+                      <div className="flex items-center justify-between gap-5 mb-6 pb-6 border-b border-white/10 shrink-0">
+                        <div className="flex items-center gap-5">
+                          <div className="relative shrink-0">
+                            {/* The ambient glow is now free to expand into the padding without being sliced */}
+                            <div className="absolute inset-0 bg-primary/80 rounded-full blur-xl opacity-60"></div>
+                            
+                            <div className="relative h-14 w-14 rounded-full bg-gradient-primary flex items-center justify-center border border-white/20 shadow-xl">
+                              <Sparkles className="h-7 w-7 text-white" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="font-bold text-2xl font-display">Echo AI</p>
+                            <p className="text-sm text-accent font-medium mt-1">Analysis Complete</p>
                           </div>
                         </div>
 
-                        <div>
-                          <p className="font-bold text-2xl font-display">Echo AI</p>
-                          <p className="text-sm text-accent font-medium mt-1">Analysis Complete</p>
-                        </div>
+                        <Button 
+                          onClick={() => handleAnalyzeProject(insightProjectId!, true)} 
+                          variant="glass" 
+                          size="sm" 
+                          disabled={isAnalyzing}
+                          className="rounded-full px-4 border-white/10 hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
+                          <span>Recalculate</span>
+                        </Button>
                       </div>
                       
-                      <div
-                        className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-base space-y-4"
-                        dangerouslySetInnerHTML={{ __html: formatInsightText(insightData) }}
-                      />
+                      <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin">
+                        <div
+                          className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-base space-y-4"
+                          dangerouslySetInnerHTML={{ __html: formatInsightText(insightData) }}
+                        />
+                      </div>
                     </div>
                   ) : null}
                 </div>

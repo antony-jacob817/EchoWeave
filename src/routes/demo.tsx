@@ -8,7 +8,7 @@ import { sampleSessions } from "@/data/sessions";
 import {
   Search, Plus, Download, Trash2, Sun, Moon, LogOut,
   LayoutGrid, FolderOpen, Settings, Sparkles, Clock, Star,
-  Mic, AlertCircle, Menu, X, Check, Loader2
+  Mic, AlertCircle, Menu, X, Check, Loader2, RefreshCw
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -434,8 +434,8 @@ function DemoPage() {
                       <p className="text-primary font-medium animate-pulse text-lg">Echo AI is analyzing your map...</p>
                     </div>
                   ) : insightData ? (
-                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 overflow-y-auto pr-2 scrollbar-thin">
-                      <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/10">
+                    <div className="flex-1 flex flex-col animate-in fade-in zoom-in-95 duration-500 min-h-0">
+                      <div className="flex items-center justify-between mb-6 pb-6 border-b border-white/10 shrink-0">
                         <div className="flex items-center gap-4">
                           <div className="h-14 w-14 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
                             <Sparkles className="h-7 w-7 text-white" />
@@ -445,11 +445,20 @@ function DemoPage() {
                             <p className="text-sm text-accent font-medium mt-1">Analysis Complete</p>
                           </div>
                         </div>
-                        <Button variant="glass" size="sm" className="rounded-full px-4 h-9 text-xs" onClick={() => handleAnalyzeProject(insightProjectId, true)}>
-                          Recalculate
+                        <Button 
+                          variant="glass" 
+                          size="sm" 
+                          disabled={isAnalyzing}
+                          className="rounded-full px-4 border-white/10 hover:bg-white/10 flex items-center gap-2"
+                          onClick={() => handleAnalyzeProject(insightProjectId!, true)}
+                        >
+                          <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
+                          <span>Recalculate</span>
                         </Button>
                       </div>
-                      <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-base space-y-4" dangerouslySetInnerHTML={{ __html: formatInsightText(insightData) }} />
+                      <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin">
+                        <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-base space-y-4" dangerouslySetInnerHTML={{ __html: formatInsightText(insightData) }} />
+                      </div>
                     </div>
                   ) : null}
                 </div>
