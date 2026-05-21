@@ -77,20 +77,20 @@
   --sidebar-ring: oklch(0.65 0.22 285);
 
   --gradient-primary: linear-gradient(135deg, oklch(0.65 0.22 285), oklch(0.78 0.18 230));
-  --gradient-hero: radial-gradient(ellipse at top, oklch(0.65 0.22 285 / 0.25), transparent 60%),
-                   radial-gradient(ellipse at bottom right, oklch(0.78 0.18 230 / 0.18), transparent 55%);
+  --gradient-hero: radial-gradient(ellipse at top, rgba(147, 51, 234, 0.25), transparent 60%),
+                   radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.18), transparent 55%);
   --gradient-text: linear-gradient(135deg, oklch(0.98 0.005 250), oklch(0.78 0.18 230));
   --shadow-glow: 0 0 60px -10px oklch(0.65 0.22 285 / 0.55);
   --shadow-elegant: 0 20px 50px -20px oklch(0.1 0.02 265 / 0.6);
   --shadow-card: 0 8px 32px -8px oklch(0.1 0.02 265 / 0.5);
 
   /* Premium Glassmorphism Properties */
-  --glass-bg: linear-gradient(135deg, oklch(1 0 0 / 0.07) 0%, oklch(1 0 0 / 0.02) 100%);
-  --glass-border: oklch(1 0 0 / 0.12);
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.25);
 
-  --glass-strong-bg: linear-gradient(135deg, oklch(1 0 0 / 0.12) 0%, oklch(1 0 0 / 0.04) 100%);
-  --glass-strong-border: oklch(1 0 0 / 0.18);
+  --glass-strong-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  --glass-strong-border: rgba(255, 255, 255, 0.18);
   --glass-strong-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.35);
 }
 
@@ -135,10 +135,12 @@
   * {
     border-color: var(--color-border);
   }
+
   html {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -146,25 +148,34 @@
     background-attachment: fixed;
     min-height: 100vh;
   }
-  h1, h2, h3, h4 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     border: 1px solid transparent;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
   }
+
   * {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
@@ -172,26 +183,29 @@
 }
 
 @layer utilities {
-  .bg-gradient-primary { background-image: var(--gradient-primary); }
-  .bg-gradient-hero { background-image: var(--gradient-hero); }
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
   .text-gradient {
     background-image: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .shadow-elegant { box-shadow: var(--shadow-elegant); }
-  .shadow-card { box-shadow: var(--shadow-card); }
-}
 
-.glass {
+  .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
   }
+
   .glass-strong {
     background: var(--glass-strong-bg);
     backdrop-filter: blur(24px);
@@ -200,14 +214,47 @@
     box-shadow: var(--glass-strong-shadow);
   }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
 }
-.animate-float { animation: float 6s ease-in-out infinite; }
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.65 0.22 285 / 0.5); }
-  50% { box-shadow: 0 0 0 20px oklch(0.65 0.22 285 / 0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.65 0.22 285 / 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 20px oklch(0.65 0.22 285 / 0);
+  }
 }
-.animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
