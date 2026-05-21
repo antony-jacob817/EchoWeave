@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import '../styles.css';
 
 const links = [
   { label: "Features", href: "#features" },
