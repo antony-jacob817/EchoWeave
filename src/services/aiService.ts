@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 
-const MOCK_MODE = true; // MOCK_MODE true - no AI involved
+const MOCK_MODE = false; // MOCK_MODE true - no AI involved
 
 export const aiService = {
     async blobToBase64(blob: Blob): Promise<string> {
