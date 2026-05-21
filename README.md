@@ -1,14 +1,8 @@
-You are 100% right. I completely missed that! Since you are using a dedicated `/api` folder for your backend routes, standard Vite won't know how to run those Vercel serverless functions on your local machine. We have to use the Vercel CLI for local development so everything boots up correctly.
-
-I have updated the **Getting Started** section to use the correct `vercel dev` commands, and I've placed huge, impossible-to-miss placeholders right at the top of the README for your Landing Page and Dashboard images!
-
-Here is your final, technically accurate `README.md`:
-
----
-
 # 🌌 EchoWeave
 
 **EchoWeave** is an intelligent, full-stack web application that transforms unstructured voice notes into structured, interactive mind maps. By leveraging AI, it analyzes thought patterns and automatically generates visual workspaces, helping users brainstorm, organize, and export their ideas with a pixel-perfect dark-theme aesthetic.
+
+<img width="1737" height="860" alt="cover" src="https://github.com/user-attachments/assets/ac8f060b-192d-40b0-9666-5dbd8ba63cf3" />
 
 ## ✨ Key Features
 
