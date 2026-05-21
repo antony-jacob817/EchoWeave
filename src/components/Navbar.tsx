@@ -40,7 +40,7 @@ export function Navbar() {
   return (
     <header className="fixed top-0 inset-x-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 mt-3">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
+        <div className="glass rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
           <Logo />
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             {links.map((l) => (
