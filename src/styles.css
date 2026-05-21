@@ -196,21 +196,6 @@
     color: transparent;
   }
 
-  .glass {
-    background: var(--background-glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--color-glass-border);
-    box-shadow: var(--shadow-glass-shadow);
-  }
-  .glass-strong {
-    background: var(--background-glass-strong-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--color-glass-strong-border);
-    box-shadow: var(--shadow-glass-strong-shadow);
-  }
-
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
@@ -254,4 +239,20 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@utility glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+}
+
+@utility glass-strong {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.35);
 }
