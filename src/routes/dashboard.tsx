@@ -79,8 +79,16 @@ function Dashboard() {
   const [mapNodes, setMapNodes] = useState<AiNode[]>([]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light") setDark(false);
+    }
+  }, []);
+
+  useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.classList.toggle("light", !dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
 
   useEffect(() => {

@@ -33,9 +33,17 @@ export function Navbar() {
   };
 
   useEffect(() => {
-      if (typeof document === "undefined") return;
-      document.documentElement.classList.toggle("light", !dark);
-    }, [dark]);
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light") setDark(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.classList.toggle("light", !dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
 
   return (
     <header className="fixed top-0 inset-x-0 z-50">

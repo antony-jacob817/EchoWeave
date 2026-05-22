@@ -31,8 +31,16 @@ function DemoPage() {
   const [insightData, setInsightData] = useState<string | null>(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme");
+      if (saved === "light") setDark(false);
+    }
+  }, []);
+
+  useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.classList.toggle("light", !dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
 
   const filtered = useMemo(
