@@ -131,22 +131,6 @@
   --glass-strong-shadow: 0 12px 40px 0 rgba(20, 25, 45, 0.1);
 }
 
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-.glass-strong {
-  background: var(--glass-strong-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-strong-border);
-  box-shadow: var(--glass-strong-shadow);
-}
-
 @layer base {
   * {
     border-color: var(--color-border);
