@@ -43,13 +43,14 @@ export function Hero() {
             Capture ideas while walking, driving, or brainstorming — instantly organized.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 w-full justify-center lg:justify-start">
-            <Button asChild variant="hero" size="xl" className="w-full sm:w-auto text-center justify-center">
+          {/* CTA Button Row — Forced side-by-side layout with fluid size adjustments */}
+          <div className="flex flex-row items-center justify-center lg:justify-start gap-3 w-full sm:w-auto">
+            <Button asChild variant="hero" size="lg" className="sm:size-xl flex-1 sm:flex-none text-center justify-center whitespace-nowrap text-sm sm:text-base px-4 sm:px-8">
               <Link to="/signup">
                 Start Free <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="glass" size="xl" className="w-full sm:w-auto text-center justify-center">
+            <Button asChild variant="glass" size="lg" className="sm:size-xl flex-1 sm:flex-none text-center justify-center whitespace-nowrap text-sm sm:text-base px-4 sm:px-8">
               <Link to="/demo">
                 <Play className="h-4 w-4 mr-2" /> View Demo
               </Link>
@@ -86,7 +87,7 @@ export function Hero() {
             <div className="absolute inset-0 bg-gradient-to-tr from-background/60 via-transparent to-transparent" />
           </div>
 
-          {/* floating glass cards (visible on all screens with fluid padding/typography) */}
+          {/* floating glass cards */}
           {floatingNodes.map((n) => (
             <motion.div
               key={n.label}
