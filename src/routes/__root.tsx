@@ -72,7 +72,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "EchoWeave — Speak freely. Watch ideas connect." },
       { name: "description", content: "EchoWeave turns your spoken thoughts into structured AI mind maps. Capture ideas naturally, anywhere." },
       { property: "og:title", content: "EchoWeave — Voice-first AI Mind Mapping" },

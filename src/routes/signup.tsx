@@ -57,27 +57,27 @@ function SignupPage() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="name">Full name</Label>
-          <Input id="name" placeholder="Maya Okafor" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input id="name" placeholder="Maya Okafor" value={name} onChange={(e) => setName(e.target.value)} suppressHydrationWarning />
           {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@studio.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input id="email" type="email" placeholder="you@studio.com" value={email} onChange={(e) => setEmail(e.target.value)} suppressHydrationWarning />
           {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} suppressHydrationWarning />
             {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="confirm">Confirm</Label>
-            <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+            <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} suppressHydrationWarning />
             {errors.confirm && <p className="text-xs text-destructive">{errors.confirm}</p>}
           </div>
         </div>
-        <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+        <Button type="submit" variant="hero" size="lg" className="w-full active:scale-[0.98] transition-transform duration-200" disabled={loading} suppressHydrationWarning>
           {loading ? "Creating…" : "Create account"}
         </Button>
         <p className="text-center text-sm text-muted-foreground">

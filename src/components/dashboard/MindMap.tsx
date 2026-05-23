@@ -1,7 +1,9 @@
-import { useEffect, useCallback, memo, useState } from 'react';
+import { useEffect, useCallback, memo, useState, useRef } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState, MarkerType, Node, Edge, Position, Handle } from 'reactflow';
 import dagre from '@dagrejs/dagre';
 import 'reactflow/dist/style.css';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Lock, Unlock } from 'lucide-react';
 
 export interface AiNode {
   id: string;
@@ -18,8 +20,17 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
   const isRoot = data.isRoot;
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(data.label);
+  const lastTap = useRef(0);
 
-  const onDoubleClick = () => setIsEditing(true);
+  const handleTap = (e: React.MouseEvent) => {
+    if (isEditing) return;
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300;
+    if (now - lastTap.current < DOUBLE_TAP_DELAY) {
+      setIsEditing(true);
+    }
+    lastTap.current = now;
+  };
 
   const onBlur = () => {
     setIsEditing(false);
@@ -37,7 +48,7 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
 
   return (
     <div 
-      onDoubleClick={onDoubleClick}
+      onClick={handleTap}
       className={`px-4 py-3 rounded-xl border backdrop-blur-md text-sm font-medium flex items-center justify-center text-center transition-all cursor-pointer
       ${isRoot 
         ? 'bg-indigo-600/30 border-indigo-400/50 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]' 
@@ -54,12 +65,13 @@ const CustomMindMapNode = memo(({ id, data }: any) => {
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={onBlur}
           onKeyDown={onKeyDown}
+          onClick={(e) => e.stopPropagation()}
           className="bg-transparent border-none outline-none text-center w-full text-white placeholder-slate-400 focus:ring-0"
         />
       ) : (
         <span className="truncate w-full">{data.label}</span>
       )}
-
+ 
       <Handle type="source" position={Position.Bottom} className="opacity-0" />
     </div>
   );
@@ -110,6 +122,12 @@ export function MindMap({
 }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const isMobile = useIsMobile();
+  const [isLocked, setIsLocked] = useState(isMobile);
+
+  useEffect(() => {
+    setIsLocked(isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     if (!aiNodes || aiNodes.length === 0) return;
@@ -183,6 +201,29 @@ export function MindMap({
           Awaiting AI analysis...
         </div>
       )}
+
+      {/* Lock Button (highly beneficial on mobile to prevent accidental node dragging) */}
+      {isMobile && (
+        <button
+          onClick={() => setIsLocked(!isLocked)}
+          className={`absolute top-4 right-4 z-20 px-3 py-2 rounded-xl border backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 text-xs font-semibold
+            ${isLocked 
+              ? 'bg-accent/20 border-accent/40 text-accent hover:bg-accent/30' 
+              : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700/80 hover:text-white'
+            }`}
+          title={isLocked ? "Unlock Nodes (Enable dragging)" : "Lock Nodes (Disable dragging)"}
+        >
+          {isLocked ? (
+            <>
+              <Lock className="h-3.5 w-3.5 text-accent animate-pulse" />
+            </>
+          ) : (
+            <>
+              <Unlock className="h-3.5 w-3.5" />
+            </>
+          )}
+        </button>
+      )}
       
       <ReactFlow
         nodes={nodes}
@@ -192,6 +233,7 @@ export function MindMap({
         onEdgesChange={onEdgesChange}
         onNodesDelete={handleNodesDelete}
         onInit={onInit}
+        nodesDraggable={!isLocked}
         fitView
         attributionPosition="bottom-right"
         className="bg-slate-900/50"
@@ -199,11 +241,13 @@ export function MindMap({
       >
         <Background color="#ffffff" gap={24} size={1} style={{ opacity: 0.03 }} />
         <Controls style={{ fill: '#000' }} />
-        <MiniMap 
-          nodeColor={(n) => n.data?.isRoot ? '#6366f1' : '#475569'}
-          maskColor="rgba(0,0,0,0.5)"
-          style={{ backgroundColor: '#1e293b' }}
-        />
+        {!isMobile && (
+          <MiniMap 
+            nodeColor={(n) => n.data?.isRoot ? '#6366f1' : '#475569'}
+            maskColor="rgba(0,0,0,0.5)"
+            style={{ backgroundColor: '#1e293b' }}
+          />
+        )}
       </ReactFlow>
     </div>
   );

@@ -53,15 +53,15 @@ function LoginPage() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@studio.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input id="email" type="email" placeholder="you@studio.com" value={email} onChange={(e) => setEmail(e.target.value)} suppressHydrationWarning />
           {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} suppressHydrationWarning />
           {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
         </div>
-        <Button type="submit" variant="hero" size="lg" className="w-full" disabled={loading}>
+        <Button type="submit" variant="hero" size="lg" className="w-full active:scale-[0.98] transition-transform duration-200" disabled={loading} suppressHydrationWarning>
           {loading ? "Signing in…" : "Sign in"}
         </Button>
         <p className="text-center text-sm text-muted-foreground">
