@@ -2,10 +2,13 @@ import { supabase } from "@/lib/supabase";
 
 export const authService = {
   async signup(email: string, password: string, fullName: string) {
+    const redirectToUrl = typeof window !== "undefined" ? `${window.location.origin}/` : undefined;
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectToUrl,
         data: {
           full_name: fullName,
         },
