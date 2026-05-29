@@ -223,15 +223,14 @@ function Dashboard() {
   };
 
   const confirmDeleteAccount = async () => {
-    if (deleteAccountConfirmInput.trim() !== "DELETE") return;
+    if (deleteAccountConfirmInput !== "DELETE") return;
     
     try {
       await authService.deleteAccount();
       navigate({ to: "/" });
       toast.success("Account deleted successfully.");
     } catch (error: any) {
-      console.error("Account deletion failed:", error);
-      toast.error(error?.message || "Failed to delete account.");
+      toast.error(error.message || "Failed to delete account.");
     } finally {
       setIsDeleteAccountModalOpen(false);
     }
@@ -1225,7 +1224,7 @@ function Dashboard() {
               placeholder="DELETE" 
               value={deleteAccountConfirmInput}
               onChange={(e) => setDeleteAccountConfirmInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && deleteAccountConfirmInput.trim() === 'DELETE' && confirmDeleteAccount()}
+              onKeyDown={(e) => e.key === 'Enter' && deleteAccountConfirmInput === 'DELETE' && confirmDeleteAccount()}
               className="mb-6 bg-white/5 border-white/10 rounded-xl h-11 text-center font-mono uppercase tracking-widest text-white focus-visible:ring-destructive/50"
             />
             <div className="flex justify-end gap-3">
@@ -1234,7 +1233,7 @@ function Dashboard() {
                 variant="destructive" 
                 className="rounded-xl px-6 font-medium shadow-glow shadow-destructive/20" 
                 onClick={confirmDeleteAccount} 
-                disabled={deleteAccountConfirmInput.trim() !== "DELETE"}
+                disabled={deleteAccountConfirmInput !== "DELETE"}
               >
                 Delete Permanently
               </Button>
