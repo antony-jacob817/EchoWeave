@@ -24,11 +24,16 @@ export const aiService = {
             console.log("MOCK MODE ON: Skipping backend API call.");
             await new Promise(resolve => setTimeout(resolve, 2000));
             return {
-                transcript: "This is a secure mock transcript to test the UI.",
+                transcript: "Okay, so, um... I want to build a marketing campaign. It needs three main pillars. First is Social Media, which includes Twitter threads and TikTok videos. The second pillar is Email, specifically a weekly newsletter. And the third is, like, paid ads on Google.",
                 mindmap: [
-                    { id: "root", label: "Secure App", parent: "" },
-                    { id: "n1", label: "Frontend", parent: "root" },
-                    { id: "n2", label: "Backend", parent: "root" }
+                    { "id": "root", "label": "Marketing Campaign", "parent": "" },
+                    { "id": "n1", "label": "Social Media", "parent": "root" },
+                    { "id": "n1_1", "label": "Twitter Threads", "parent": "n1" },
+                    { "id": "n1_2", "label": "TikTok Videos", "parent": "n1" },
+                    { "id": "n2", "label": "Email", "parent": "root" },
+                    { "id": "n2_1", "label": "Weekly Newsletter", "parent": "n2" },
+                    { "id": "n3", "label": "Paid Ads", "parent": "root" },
+                    { "id": "n3_1", "label": "Google", "parent": "n3" }
                 ]
             };
         }
@@ -80,33 +85,33 @@ export const aiService = {
 
     // --- DATABASE PERSISTENCE FOR INSIGHTS ---
     async getSavedProjectInsight(projectId: string): Promise<string | null> {
-      const { data, error } = await supabase
-        .from("ai_generations")
-        .select("output_text") 
-        .eq("project_id", projectId)
-        .eq("generation_type", "insight")
-        .maybeSingle();
+        const { data, error } = await supabase
+            .from("ai_generations")
+            .select("output_text")
+            .eq("project_id", projectId)
+            .eq("generation_type", "insight")
+            .maybeSingle();
 
-      if (error) return null;
-      return data?.output_text || null; 
+        if (error) return null;
+        return data?.output_text || null;
     },
 
     async saveProjectInsight(projectId: string, insightText: string) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("User not authenticated");
 
-      const { error } = await supabase
-        .from("ai_generations")
-        .upsert(
-          {
-            project_id: projectId,
-            user_id: user.id,
-            generation_type: "insight",
-            output_text: insightText, 
-          },
-          { onConflict: "project_id,generation_type" }
-        );
+        const { error } = await supabase
+            .from("ai_generations")
+            .upsert(
+                {
+                    project_id: projectId,
+                    user_id: user.id,
+                    generation_type: "insight",
+                    output_text: insightText,
+                },
+                { onConflict: "project_id,generation_type" }
+            );
 
-      if (error) throw error;
+        if (error) throw error;
     }
 };
