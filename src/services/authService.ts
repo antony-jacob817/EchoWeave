@@ -105,9 +105,75 @@ export const authService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("User not authenticated");
 
-    await supabase.from("users").delete().eq("id", user.id);
+    // 1. Delete AI Generations associated with user
+    const { error: aiGenError } = await supabase
+      .from("ai_generations")
+      .delete()
+      .eq("user_id", user.id);
+    if (aiGenError) {
+      console.error("Error deleting user AI generations:", aiGenError);
+      throw aiGenError;
+    }
 
-    await supabase.auth.signOut();
-    
+    // 2. Fetch all user projects to delete their mindmaps
+    const { data: projects, error: fetchProjectsError } = await supabase
+      .from("projects")
+      .select("id")
+      .eq("user_id", user.id);
+    if (fetchProjectsError) {
+      console.error("Error fetching user projects for deletion:", fetchProjectsError);
+      throw fetchProjectsError;
+    }
+
+    if (projects && projects.length > 0) {
+      const projectIds = projects.map(p => p.id);
+
+      // 3. Delete Mindmaps associated with user's projects
+      const { error: mindmapsError } = await supabase
+        .from("mindmaps")
+        .delete()
+        .in("project_id", projectIds);
+      if (mindmapsError) {
+        console.error("Error deleting user mindmaps:", mindmapsError);
+        throw mindmapsError;
+      }
+    }
+
+    // 4. Delete Voice Notes associated with user
+    const { error: voiceNotesError } = await supabase
+      .from("voice_notes")
+      .delete()
+      .eq("user_id", user.id);
+    if (voiceNotesError) {
+      console.error("Error deleting user voice notes:", voiceNotesError);
+      throw voiceNotesError;
+    }
+
+    // 5. Delete Projects associated with user
+    const { error: projectsError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("user_id", user.id);
+    if (projectsError) {
+      console.error("Error deleting user projects:", projectsError);
+      throw projectsError;
+    }
+
+    // 6. Delete User Profile from public users table
+    const { error: userError } = await supabase
+      .from("users")
+      .delete()
+      .eq("id", user.id);
+    if (userError) {
+      console.error("Error deleting user profile:", userError);
+      throw userError;
+    }
+
+    // 7. Sign Out the User
+    const { error: signOutError } = await supabase.auth.signOut();
+    if (signOutError) {
+      console.error("Error signing out user:", signOutError);
+      throw signOutError;
+    }
   }
 };
